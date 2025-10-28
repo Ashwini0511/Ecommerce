@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop - E-Commerce Hub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='CSS/shop.css') }}">
+</head>
+<body>
+
+<!-- Navbar -->
+<header class="navbar">
+  <div class="container">
+    <div class="logo">E-Commerce Hub</div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('home') }}"><i class="fas fa-house"></i> Home</a></li>
+        <li><a href="{{ url_for('shop') }}"><i class="fas fa-shop"></i> Shop</a></li>
+        <li><a href="{{ url_for('contact') }}"><i class="fas fa-envelope"></i> Contact</a></li>
+      </ul>
+    </nav>
+    <div class="nav-icons">
+      <a href="#"><i class="fa fa-heart"></i></a>
+      <a href="{{ url_for('shop') }}"><i class="fa fa-shopping-cart"></i></a>
+      <a href="{{ url_for('seller') }}"><i class="fa fa-user"></i></a>
+      <a class="btn signup" href="{{ url_for('signup') }}">SignUp</a>
+      <a class="btn login" href="{{ url_for('sign') }}">Login</a> 
+      <a class="btn sell" href="{{ url_for('admin') }}">Admin Login</a>
+      <a class="btn sell" href="{{ url_for('seller') }}">Sell With Us</a>
+    </div>
+  </div>
+</header>
+
+<!-- Shop Section -->
+<main class="shop-section">
+  <div class="shop-container">
+
+    <!-- Sidebar Filters -->
+    <aside class="filters">
+      <i class="fa fa-filter"></i>
+      <h3>Filters</h3>
+
+      <div class="filter-group">
+        <h4>Categories</h4>
+        <label><input type="checkbox" name="category" value="all" checked> All</label><br>
+        <label><input type="checkbox" name="category" value="electronics"> Electronics</label><br>
+        <label><input type="checkbox" name="category" value="audio"> Audio</label><br>
+        <label><input type="checkbox" name="category" value="computers"> Computers</label><br>
+        <label><input type="checkbox" name="category" value="wearables"> Wearables</label><br>
+        <label><input type="checkbox" name="category" value="photography"> Photography</label><br>
+        <label><input type="checkbox" name="category" value="accessories"> Accessories</label>
+      </div>
+
+      <div class="filter-group">
+        <h4>Price Range</h4>
+        <label><input type="checkbox" name="price" value="under-100"> Under $100</label><br>
+        <label><input type="checkbox" name="price" value="100-300"> $100 - $300</label><br>
+        <label><input type="checkbox" name="price" value="300-500"> $300 - $500</label><br>
+        <label><input type="checkbox" name="price" value="500-1000"> $500 - $1000</label><br>
+        <label><input type="checkbox" name="price" value="over-1000"> Over $1000</label>
+      </div>
+
+      <div class="clear-filters">
+        <button class="btn-clear">Clear All Filters</button>
+      </div>
+    </aside>
+
+    <!-- Product Grid -->
+    <section class="products-grid">
+      <div class="products-header">
+        <h2>Shop All Products</h2>
+        <p>Discover amazing products from our collection</p>
+      </div>
+
+      <div class="products-controls">
+        <input type="text" placeholder="Search products..." class="search-input" />
+        <select class="sort-dropdown">
+          <option value="featured">Featured</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="newest">Newest First</option>
+        </select>
+      </div>
+
+      <!-- Products -->
+      <div class="products">
+        {% if products %}
+          {% for product in products %}
+            <a href="{{ url_for('product_detail', id=product.id) }}">
+              <div class="product-card">
+                {% if product.is_new %}
+                  <span class="badge new">New</span>
+                {% endif %}
+                {% if product.discount %}
+                  <span class="badge discount">-{{ product.discount }}%</span>
+                {% endif %}
+                <img src="{{ url_for('static', filename=product.image) if product.image else url_for('static', filename='Assets/default.png') }}" alt="{{ product.name }}" />
+                <p class="category">{{ product.category }}</p>
+                <h4>{{ product.name }}</h4>
+                <div class="rating">
+                  {% if product.rating %}
+                    {% for i in range(product.rating|int) %}⭐{% endfor %}
+                    {% for i in range(5 - product.rating|int) %}☆{% endfor %}
+                  {% else %}
+                    ☆☆☆☆☆
+                  {% endif %}
+                  ({{ product.review_count or 0 }})
+                </div>
+                <p class="price">
+                  ${{ product.price }}
+                  {% if product.old_price %}
+                    <span class="old-price">${{ product.old_price }}</span>
+                  {% endif %}
+                </p>
+              </div>
+            </a>
+          {% endfor %}
+        {% else %}
+          <p>No products available.</p>
+        {% endif %}
+      </div>
+
+    </section>
+  </div>
+</main>
+
+<!-- Seller Invitation -->
+<section class="join">
+  <h2>Ready to Start Selling?</h2>
+  <p>Join thousands of sellers growing their business with E-Commerce Hub.</p>
+  <button class="btn seller">Become A Seller</button>
+  <button class="btn sell">Learn More</button>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter">
+  <h2>Stay Updated with Our Latest Offers</h2>
+  <p>Subscribe to our newsletter and never miss a deal</p>
+  <form>
+    <input type="email" placeholder="Enter your email" name="email" required />
+    <button type="submit">Subscribe</button>
+  </form>
+</section>
+
+<!-- Footer -->
+<footer class="footer container">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <h3>E-Commerce Hub</h3>
+      <p>Your trusted partner for premium products and exceptional shopping experience.</p>
+    </div>
+    <div class="socials">
+      <ul class="nav-links">
+        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+        <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-columns">
+    <div>
+      <h4>Quick Links</h4>
+      <p><a href="{{ url_for('home') }}">Home</a></p>
+      <p><a href="{{ url_for('shop') }}">Shop</a></p>
+      <p><a href="#">About Us</a></p>
+      <p><a href="{{ url_for('contact') }}">Contact</a></p>
+      <p><a href="#">FAQ</a></p>
+    </div>
+    <div>
+      <h4>Customer Service</h4>
+      <p><a href="#">My Account</a></p>
+      <p><a href="#">Order Tracking</a></p>
+      <p><a href="#">Shipping Info</a></p>
+      <p><a href="#">Returns</a></p>
+      <p><a href="#">Privacy Policy</a></p>
+    </div>
+    <div>
+      <h4>Contact Info</h4>
+      <p><a href="#">Location</a></p>
+      <p><a href="#">Phone Number</a></p>
+      <p><a href="#">Email</a></p>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>Built with ❤️ by UCSI Interns</p>
+    <p>&copy; 2025 E-Commerce Hub. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
